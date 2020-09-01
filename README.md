@@ -42,7 +42,7 @@ connect to container via VNC or RDP.
 
 ![image](https://user-images.githubusercontent.com/3856350/91890535-9a083700-ecca-11ea-877f-2a30a2c84d74.png)
 
-> TIPS: if you cannot see password column, just type password and press ENTER key.
+> TIPS: if you cannot see password column, just press ENTER key.
 
 ![image](https://user-images.githubusercontent.com/3856350/91892760-2d8f3700-ecce-11ea-9da4-089b2da50305.png)
 
