@@ -1,12 +1,12 @@
 FROM alpine:edge
 
-LABEL version="5.2"
+LABEL version="5.2.1"
 LABEL description="An Alpine based docker image contains Apache JMeter GUI to configure scenario.\
     Enable connect container with XServer, xRDP and vnc."
 LABEL maintainer="3856350+guitarrapc@users.noreply.github.com"
 
 STOPSIGNAL SIGKILL
-ENV JMETER_VERSION "5.2"
+ENV JMETER_VERSION "5.2.1"
 ENV JMETER_HOME /opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_BIN ${JMETER_HOME}/bin
 ENV PATH ${JMETER_BIN}:$PATH
