@@ -1,0 +1,10 @@
+version: "3"
+services:
+  web:
+    image: guitarrapc/jmeter-gui:latest
+    tty: true
+    volumes:
+      - ./scenario/:/root/jmeter/
+    ports:
+      - 5900:5900
+      - 3390:3389

@@ -1,0 +1,25 @@
+name: Docker Push
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+*" # only tag with pattern match
+
+env:
+  OWNER: guitarrapc
+  IMAGE_NAME: jmeter-gui
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}
+      - uses: actions/checkout@v2
+      - run: docker build --build-arg VCS_REF=$(git rev-parse --short HEAD) -t ${OWNER}/${IMAGE_NAME}:latest .
+      - run: docker tag ${OWNER}/${IMAGE_NAME}:latest ${OWNER}/${IMAGE_NAME}:${GIT_TAG}
+      - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+        env:
+          DOCKER_USER: ${{ secrets.SYNCED_DOCKER_USER }}
+          DOCKER_PASS: ${{ secrets.SYNCED_DOCKER_PASS }}
+      - run: docker push ${OWNER}/${IMAGE_NAME}
