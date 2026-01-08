@@ -6,8 +6,7 @@ on:
       - "[0-9]+.[0-9]+*" # only tag with pattern match
 
 env:
-  OWNER: guitarrapc
-  IMAGE_NAME: jmeter-gui
+  CONTAINER_IMAGE: guitarrapc/jmeter-gui
 
 jobs:
   release:
@@ -52,8 +51,8 @@ jobs:
         uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
           images: |
-            ${{ env.OWNER }}/${{ env.IMAGE_NAME }}
-            ghcr.io/${{ env.OWNER }}/${{ env.IMAGE_NAME }}
+            ${{ env.CONTAINER_IMAGE }}
+            ghcr.io/${{ env.CONTAINER_IMAGE }}
 
       - name: Build and push Docker image (latest)
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
