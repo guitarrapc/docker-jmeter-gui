@@ -14,14 +14,13 @@ run container
 docker run -itd --rm -v ${WORK_DIR}/:/root/jmeter/ -p 5900:5900 -p 3390:3389 guitarrapc/jmeter-gui:latest
 ```
 
-docker-compose (see sample)
+docker compose (see sample)
 
 ```shell
-docker-compose up
+docker compose up
 ```
 
 ```yaml
-version: "3"
 services:
   web:
     image: guitarrapc/jmeter-gui:latest
