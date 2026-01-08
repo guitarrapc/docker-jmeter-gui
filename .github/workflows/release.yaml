@@ -8,18 +8,67 @@ on:
 env:
   OWNER: guitarrapc
   IMAGE_NAME: jmeter-gui
-  DOCKER_BUILDKIT: 1
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  release:
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ghcr: false
+            dockerfile: ./src/ubuntu24.04/Dockerfile
+          - ghcr: true
+            dockerfile: ./src/ubuntu24.04/Dockerfile
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
-      - run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/tags/}
-      - uses: actions/checkout@v2
-      - run: docker build --build-arg VCS_REF=$(git rev-parse --short HEAD) -t ${OWNER}/${IMAGE_NAME}:latest .
-      - run: docker tag ${OWNER}/${IMAGE_NAME}:latest ${OWNER}/${IMAGE_NAME}:${GIT_TAG}
-      - run: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-        env:
-          DOCKER_USER: ${{ secrets.SYNCED_DOCKER_USER }}
-          DOCKER_PASS: ${{ secrets.SYNCED_DOCKER_PASS }}
-      - run: docker push ${OWNER}/${IMAGE_NAME}
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+      # docker push (auto using buildkit)
+      - name: Login to Docker Hub
+        if: ${{ ! matrix.ghcr }}
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          username: ${{ secrets.SYNCED_DOCKER_USER }}
+          password: ${{ secrets.SYNCED_DOCKER_PASS }}
+      - name: Login to GitHub Container Registry
+        if: ${{ matrix.ghcr }}
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: |
+            ${{ env.OWNER }}/${{ env.IMAGE_NAME }}
+            ghcr.io/${{ env.OWNER }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image (latest)
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: false
+          tags: latest
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push Docker image (tag)
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
