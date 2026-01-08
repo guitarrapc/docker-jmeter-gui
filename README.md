@@ -23,8 +23,7 @@ docker compose up
 
 connect to container via VNC or RDP.
 
-* vpc pass: `root`
-* rdp pass: `root`
+* password: `root`
 
 **RDP**
 
@@ -58,11 +57,9 @@ Save Scenario's `.jmx` on mounted volume to share Scenario with Host OS, in this
 Docker build command:
 
 ```shell
-docker build -t jmeter-gui:5.6.3-alpine3.23 -f ./src/alpine3.23/Dockerfile .
 docker build -t jmeter-gui:5.6.3-ubuntu24.04 -f ./src/ubuntu24.04/Dockerfile .
 ```
 
 ```shell
-docker run -it --rm -v ${PWD}/:/root/mount/ -p 5900:5900 -p 3390:3389 jmeter-gui:5.6.3-alpine3.23
 docker run -it --rm -v ${PWD}/:/root/mount/ -p 5900:5900 -p 3390:3389 jmeter-gui:5.6.3-ubuntu24.04
 ```

@@ -2,7 +2,6 @@ services:
   web:
     build:
       context: .
-      #dockerfile: ./src/alpine3.23//Dockerfile
       dockerfile: ./src/ubuntu24.04/Dockerfile
     tty: true
     volumes:
