@@ -17,7 +17,7 @@ docker run -itd --rm -v ${WORK_DIR}/:/root/jmeter/ -p 5900:5900 -p 3390:3389 gui
 docker compose (see sample)
 
 ```shell
-cd sample
+cd samples
 docker compose up
 ```
 
@@ -70,7 +70,7 @@ Save Scenario's `.jmx` on mounted volume to share Scenario with Host OS, in this
 Docker build command:
 
 ```shell
-docker build -t jmeter-gui:5.6.3 .
+docker build -t jmeter-gui:5.6.3 -f ./alpine/Dockerfile .
 docker run -it --rm -v ${PWD}/:/root/mount/ -p 5900:5900 -p 3390:3389 jmeter-gui:5.6.3
 ```
 
