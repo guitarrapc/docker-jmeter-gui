@@ -6,10 +6,10 @@ LABEL description="An Alpine based docker image contains Apache JMeter GUI to co
 LABEL maintainer="3856350+guitarrapc@users.noreply.github.com"
 
 STOPSIGNAL SIGKILL
-ENV JMETER_VERSION "5.3"
-ENV JMETER_HOME /opt/apache-jmeter-${JMETER_VERSION}
-ENV JMETER_BIN ${JMETER_HOME}/bin
-ENV PATH ${JMETER_BIN}:$PATH
+ENV JMETER_VERSION="5.3"
+ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
+ENV JMETER_BIN=${JMETER_HOME}/bin
+ENV PATH=${JMETER_BIN}:$PATH
 ENV DISPLAY=":99" \
     RESOLUTION="1366x768x24" \
     PASS="root"
