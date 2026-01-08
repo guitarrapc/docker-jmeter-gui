@@ -62,7 +62,7 @@ CMD ["bash", "-c", "rm -f /tmp/.X99-lock /var/run/xrdp.pid /var/run/xrdp-sesman.
     sleep 3 \
     && fluxbox & \
     sleep 2 \
-    && DISPLAY=:99 jmeter -Jjmeter.laf=CrossPlatform & \
+    && jmeter -Jjmeter.laf=CrossPlatform & \
     sleep 3 \
     && x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :99 -forever -rfbport 5900 -rfbauth /etc/x11vnc.pass -shared & \
     sleep 2 \
