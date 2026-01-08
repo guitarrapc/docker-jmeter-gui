@@ -9,6 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV JMETER_VERSION="5.6.3"
 ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_BIN=${JMETER_HOME}/bin
+ENV JMETER_PLUGINS_MANAGER_VERSION="1.10"
 ENV PATH=${JMETER_BIN}:$PATH
 ENV DISPLAY=":99" \
     RESOLUTION="1366x768x24" \
@@ -29,8 +30,8 @@ RUN apt-get update \
 RUN wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz -O /tmp/jmeter.tgz \
     && tar -xzf /tmp/jmeter.tgz -C /opt \
     && rm /tmp/jmeter.tgz \
-    && rm -rf ${JMETER_HOME}/docs ${JMETER_HOME}/printable_docs \
-    && wget https://jmeter-plugins.org/get/ -O ${JMETER_HOME}/lib/ext/jmeter-plugins-manager.jar
+    && rm -rf ${JMETER_HOME}/docs ${JMETER_HOME}/printable_docs
+RUN wget https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager/${JMETER_PLUGINS_MANAGER_VERSION}/jmeter-plugins-manager-${JMETER_PLUGINS_MANAGER_VERSION}.jar -O ${JMETER_HOME}/lib/ext/jmeter-plugins-manager.jar
 
 # Configure VNC
 RUN x11vnc -storepasswd ${PASS} /etc/x11vnc.pass
