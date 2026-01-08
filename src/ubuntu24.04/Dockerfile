@@ -1,8 +1,7 @@
 FROM ubuntu:24.04
 
 LABEL version="5.6.3"
-LABEL description="An Ubuntu based docker image contains Apache JMeter GUI to configure scenario.\
-    Enable connect container with VNC and RDP."
+LABEL description="An Ubuntu based docker image contains Apache JMeter GUI to configure scenario. Enable connect container with VNC and RDP."
 LABEL maintainer="3856350+guitarrapc@users.noreply.github.com"
 
 ENV DEBIAN_FRONTEND=noninteractive
