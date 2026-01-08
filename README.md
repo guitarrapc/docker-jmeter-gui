@@ -17,6 +17,7 @@ docker run -itd --rm -v ${WORK_DIR}/:/root/jmeter/ -p 5900:5900 -p 3390:3389 gui
 docker compose (see sample)
 
 ```shell
+cd sample
 docker compose up
 ```
 
@@ -62,3 +63,19 @@ Configure JMeter Scenario with GUI inside container.
 Save Scenario's `.jmx` on mounted volume to share Scenario with Host OS, in this example `/root/jmeter`.
 
 ![image](https://user-images.githubusercontent.com/3856350/91890909-20bd1400-eccb-11ea-8d18-5846bdd7fe4b.png)
+
+
+## Build
+
+Docker build command:
+
+```shell
+docker build -t jmeter-gui:5.6.3 .
+docker run -it --rm -v ${PWD}/:/root/mount/ -p 5900:5900 -p 3390:3389 jmeter-gui:5.6.3
+```
+
+docker compose build command:
+
+```shell
+docker compose build
+```

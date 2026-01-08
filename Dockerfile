@@ -1,12 +1,12 @@
 FROM alpine:edge
 
-LABEL version="5.3"
+LABEL version="5.6.3"
 LABEL description="An Alpine based docker image contains Apache JMeter GUI to configure scenario.\
     Enable connect container with XServer, xRDP and vnc."
 LABEL maintainer="3856350+guitarrapc@users.noreply.github.com"
 
 STOPSIGNAL SIGKILL
-ENV JMETER_VERSION="5.3"
+ENV JMETER_VERSION="5.6.3"
 ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_BIN=${JMETER_HOME}/bin
 ENV PATH=${JMETER_BIN}:$PATH
@@ -40,10 +40,13 @@ EXPOSE 3389
 
 WORKDIR /root
 
-CMD ["bash", "-c", "rm -f /tmp/.X99-lock && rm -f /var/run/xrdp.pid\
-    && nohup bash -c \"/usr/bin/Xvfb :99 -screen 0 ${RESOLUTION} -ac +extension GLX +render -noreset && export DISPLAY=99 > /dev/null 2>&1 &\"\
-    && nohup bash -c \"startxfce4 > /dev/null 2>&1 &\"\
-    && nohup bash -c \"x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :99 -forever -bg -nopw -rfbport 5900 -rfbauth /etc/x11vnc.pass > /dev/null 2>&1\"\
-    && nohup bash -c \"xrdp > /dev/null 2>&1\"\
-    && nohup bash -c \"jmeter -Jjmeter.laf=CrossPlatform > /dev/null 2>&1 &\"\
-    && tail -f /dev/null"]
+CMD ["bash", "-c", "rm -f /tmp/.X99-lock && rm -f /var/run/xrdp.pid \
+    && /usr/bin/Xvfb :99 -screen 0 ${RESOLUTION} -ac +extension GLX +render -noreset & \
+    sleep 2 \
+    && startxfce4 & \
+    sleep 2 \
+    && x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :99 -forever -bg -nopw -rfbport 5900 -rfbauth /etc/x11vnc.pass \
+    && xrdp \
+    && sleep 2 \
+    && jmeter -Jjmeter.laf=CrossPlatform & \
+    tail -f /dev/null"]
