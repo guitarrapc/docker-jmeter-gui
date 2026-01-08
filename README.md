@@ -8,6 +8,13 @@ Run [Apache JMeter](http://jmeter.apache.org) GUI in a Docker container and conn
 
 Find Images on [Docker Hub](https://hub.docker.com/r/guitarrapc/jmeter-gui).
 
+## Featured Tags
+
+- [latest](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/ubuntu24.04/Dockerfile), [5.6.3](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/ubuntu24.04/Dockerfile) (Ubuntu 24.04)
+  - `docker pull guitarrapc/jmeter-gui:5.6.3`
+- [5.3](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.3/Dockerfile) (Alpine)
+  - `docker pull guitarrapc/jmeter-gui:5.3`
+
 ## Motivation
 
 Apache JMeter is a GUI-based performance testing tool, but setting up the runtime environment can be challenging.
