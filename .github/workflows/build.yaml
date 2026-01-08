@@ -16,6 +16,11 @@ jobs:
     permissions:
       contents: read
       packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./src/ubuntu24.04/Dockerfile
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
