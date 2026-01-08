@@ -1,4 +1,4 @@
-FROM alpine:edge as builder
+FROM alpine:3.23.2 as builder
 
 ENV JMETER_VERSION="5.6.3"
 ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
@@ -9,7 +9,7 @@ RUN apk add --no-cache curl \
     && curl -L https://jmeter-plugins.org/get/ > ${JMETER_HOME}/lib/ext/jmeter-plugins-manager.jar \
     && rm -rf ${JMETER_HOME}/docs ${JMETER_HOME}/printable_docs
 
-FROM alpine:edge
+FROM alpine:3.23.2
 
 LABEL version="5.6.3"
 LABEL description="An Alpine based docker image contains Apache JMeter GUI to configure scenario.\
