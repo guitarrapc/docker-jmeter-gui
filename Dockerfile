@@ -1,3 +1,14 @@
+FROM alpine:edge as builder
+
+ENV JMETER_VERSION="5.6.3"
+ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
+
+RUN apk add --no-cache curl \
+    && curl -L https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz > /tmp/jmeter.tgz \
+    && tar -xvf /tmp/jmeter.tgz -C /opt \
+    && curl -L https://jmeter-plugins.org/get/ > ${JMETER_HOME}/lib/ext/jmeter-plugins-manager.jar \
+    && rm -rf ${JMETER_HOME}/docs ${JMETER_HOME}/printable_docs
+
 FROM alpine:edge
 
 LABEL version="5.6.3"
@@ -14,14 +25,12 @@ ENV DISPLAY=":99" \
     RESOLUTION="1366x768x24" \
     PASS="root"
 
-RUN  echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
-    && apk add --no-cache curl xfce4-terminal xvfb x11vnc xfce4 openjdk8-jre bash \
-    && curl -L https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz > /tmp/jmeter.tgz \
-    && tar -xvf /tmp/jmeter.tgz -C /opt \
-    && rm /tmp/jmeter.tgz \
-    && curl -L https://jmeter-plugins.org/get/ > /opt/apache-jmeter-${JMETER_VERSION}/lib/ext/jmeter-plugins-manager.jar
+COPY --from=builder /opt/apache-jmeter-${JMETER_VERSION} /opt/apache-jmeter-${JMETER_VERSION}
 
-RUN x11vnc -storepasswd ${PASS} /etc/x11vnc.pass
+RUN  echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+    && apk add --no-cache xterm xvfb x11vnc fluxbox openjdk8-jre bash ttf-dejavu \
+    && x11vnc -storepasswd ${PASS} /etc/x11vnc.pass \
+    && mkdir -p /root/.fluxbox && echo "session.screen0.workspaces: 1" > /root/.fluxbox/init
 
 EXPOSE 5900
 
@@ -30,7 +39,7 @@ WORKDIR /root
 CMD ["bash", "-c", "rm -f /tmp/.X99-lock \
     && /usr/bin/Xvfb :99 -screen 0 ${RESOLUTION} -ac +extension GLX +render -noreset & \
     sleep 2 \
-    && startxfce4 & \
+    && fluxbox & \
     sleep 2 \
     && x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :99 -forever -bg -rfbport 5900 -rfbauth /etc/x11vnc.pass \
     && sleep 2 \
