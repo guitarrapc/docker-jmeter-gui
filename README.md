@@ -1,4 +1,4 @@
-![Docker Build](https://github.com/guitarrapc/docker-jmeter-gui/workflows/bujild/badge.svg) ![Docker Push](https://github.com/guitarrapc/docker-jmeter-gui/workflows/release/badge.svg) [![hub](https://img.shields.io/docker/pulls/guitarrapc/jmeter-gui.svg)](https://hub.docker.com/r/guitarrapc/jmeter-gui/)
+![Docker Build](https://github.com/guitarrapc/docker-jmeter-gui/workflows/build/badge.svg) ![Docker Push](https://github.com/guitarrapc/docker-jmeter-gui/workflows/release/badge.svg) [![hub](https://img.shields.io/docker/pulls/guitarrapc/jmeter-gui.svg)](https://hub.docker.com/r/guitarrapc/jmeter-gui/)
 
 # docker-jmeter-gui
 
