@@ -58,13 +58,13 @@ EXPOSE 5900 3389
 WORKDIR /root
 
 CMD ["bash", "-c", "rm -f /tmp/.X99-lock /var/run/xrdp.pid /var/run/xrdp-sesman.pid \
-    && /usr/bin/Xvfb :99 -screen 0 ${RESOLUTION} -ac +extension GLX +render -noreset & \
+    && /usr/bin/Xvfb ${DISPLAY} -screen 0 ${RESOLUTION} -ac +extension GLX +render -noreset & \
     sleep 3 \
     && fluxbox & \
     sleep 2 \
     && jmeter -Jjmeter.laf=CrossPlatform & \
     sleep 3 \
-    && x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :99 -forever -rfbport 5900 -rfbauth /etc/x11vnc.pass -shared & \
+    && x11vnc -xkb -noxrecord -noxfixes -noxdamage -display ${DISPLAY} -forever -rfbport 5900 -rfbauth /etc/x11vnc.pass -shared & \
     sleep 2 \
     && xrdp-sesman & \
     sleep 1 \
