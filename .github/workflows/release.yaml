@@ -11,7 +11,7 @@ env:
 jobs:
   release:
     permissions:
-      contents: read
+      contents: write
       packages: write
     strategy:
       fail-fast: false
@@ -66,3 +66,11 @@ jobs:
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      # release
+      - name: Create Release
+        uses: guitarrapc/actions/.github/actions/create-release@main
+        with:
+          tag: ${{ github.ref_name }}
+          title: ${{ github.ref_name }}
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
