@@ -40,19 +40,7 @@ RUN x11vnc -storepasswd ${PASS} /etc/x11vnc.pass
 RUN echo "root:${PASS}" | chpasswd
 
 # Configure RDP
-RUN echo "[Globals]" > /etc/xrdp/xrdp.ini \
-    && echo "bitmap_cache=true" >> /etc/xrdp/xrdp.ini \
-    && echo "bitmap_compression=true" >> /etc/xrdp/xrdp.ini \
-    && echo "autorun=jmeter" >> /etc/xrdp/xrdp.ini \
-    && echo "port=3389" >> /etc/xrdp/xrdp.ini \
-    && echo "" >> /etc/xrdp/xrdp.ini \
-    && echo "[jmeter]" >> /etc/xrdp/xrdp.ini \
-    && echo "name=jmeter" >> /etc/xrdp/xrdp.ini \
-    && echo "lib=libvnc.so" >> /etc/xrdp/xrdp.ini \
-    && echo "ip=127.0.0.1" >> /etc/xrdp/xrdp.ini \
-    && echo "port=5900" >> /etc/xrdp/xrdp.ini \
-    && echo "username=na" >> /etc/xrdp/xrdp.ini \
-    && echo "password=ask" >> /etc/xrdp/xrdp.ini
+COPY xrdp.ini /etc/xrdp/xrdp.ini
 
 EXPOSE 5900 3389
 
