@@ -39,15 +39,19 @@ RUN x11vnc -storepasswd ${PASS} /etc/x11vnc.pass
 RUN echo "root:${PASS}" | chpasswd
 
 # Configure RDP
-RUN mkdir -p /root/.fluxbox \
-    && echo "session.screen0.workspaces: 1" > /root/.fluxbox/init \
-    && echo '#!/bin/bash' > /etc/xrdp/startwm.sh \
-    && echo 'export PATH=/opt/apache-jmeter-5.6.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' >> /etc/xrdp/startwm.sh \
-    && echo 'export DISPLAY=${DISPLAY:-:10}' >> /etc/xrdp/startwm.sh \
-    && echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> /etc/xrdp/startwm.sh \
-    && echo '/usr/bin/fluxbox &' >> /etc/xrdp/startwm.sh \
-    && echo '/opt/apache-jmeter-5.6.3/bin/jmeter -Jjmeter.laf=CrossPlatform' >> /etc/xrdp/startwm.sh \
-    && chmod +x /etc/xrdp/startwm.sh
+RUN echo "[Globals]" > /etc/xrdp/xrdp.ini \
+    && echo "bitmap_cache=true" >> /etc/xrdp/xrdp.ini \
+    && echo "bitmap_compression=true" >> /etc/xrdp/xrdp.ini \
+    && echo "autorun=jmeter" >> /etc/xrdp/xrdp.ini \
+    && echo "port=3389" >> /etc/xrdp/xrdp.ini \
+    && echo "" >> /etc/xrdp/xrdp.ini \
+    && echo "[jmeter]" >> /etc/xrdp/xrdp.ini \
+    && echo "name=jmeter" >> /etc/xrdp/xrdp.ini \
+    && echo "lib=libvnc.so" >> /etc/xrdp/xrdp.ini \
+    && echo "ip=127.0.0.1" >> /etc/xrdp/xrdp.ini \
+    && echo "port=5900" >> /etc/xrdp/xrdp.ini \
+    && echo "username=na" >> /etc/xrdp/xrdp.ini \
+    && echo "password=ask" >> /etc/xrdp/xrdp.ini
 
 EXPOSE 5900 3389
 
@@ -55,12 +59,13 @@ WORKDIR /root
 
 CMD ["bash", "-c", "rm -f /tmp/.X99-lock /var/run/xrdp.pid /var/run/xrdp-sesman.pid \
     && /usr/bin/Xvfb :99 -screen 0 ${RESOLUTION} -ac +extension GLX +render -noreset & \
-    sleep 2 \
+    sleep 3 \
     && fluxbox & \
     sleep 2 \
-    && x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :99 -forever -bg -rfbport 5900 -rfbauth /etc/x11vnc.pass \
-    && sleep 2 \
-    && xrdp-sesman && xrdp --nodaemon & \
-    sleep 2 \
     && DISPLAY=:99 jmeter -Jjmeter.laf=CrossPlatform & \
-    tail -f /dev/null"]
+    sleep 3 \
+    && x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :99 -forever -rfbport 5900 -rfbauth /etc/x11vnc.pass -shared & \
+    sleep 2 \
+    && xrdp-sesman & \
+    sleep 1 \
+    && xrdp --nodaemon"]
