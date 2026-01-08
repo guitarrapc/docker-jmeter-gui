@@ -2,64 +2,111 @@
 
 # docker-jmeter-gui
 
-Docker image for [Apache JMeter](http://jmeter.apache.org).
-This Docker image run jmeter gui on container and user can connect via VNC or RDP.
-Find Images of this repo on [Docker Hub](https://hub.docker.com/r/guitarrapc/jmeter-gui).
+Run [Apache JMeter](http://jmeter.apache.org) GUI in a Docker container and connect via RDP or VNC.
+
+Find Images on [Docker Hub](https://hub.docker.com/r/guitarrapc/jmeter-gui).
+
+## Motivation
+
+Apache JMeter is a GUI-based performance testing tool, but setting up the runtime environment can be challenging.
+
+- **Java dependency**: Requires specific JDK versions and environment configuration
+- **Platform differences**: Behavior may vary across operating systems
+- **Installation overhead**: You may not want to install JMeter directly on your host machine
+
+This Docker image solves these problems by running JMeter GUI inside a container.
+
+- Access JMeter GUI via **RDP** (default on Windows) or **VNC** (default on macOS/Linux)
+- Mount host directories to create and save `.jmx` scenario files
+- Keep your host environment clean without installing Java or JMeter
+- Ensure consistent behavior across different platforms
 
 ## Usage
 
-run container
+### Using Docker Run
 
 ```shell
-docker run -itd --rm -v ${WORK_DIR}/:/root/jmeter/ -p 5900:5900 -p 3390:3389 guitarrapc/jmeter-gui:latest
+docker run -itd --rm \
+  -v ${WORK_DIR}/:/root/jmeter/ \
+  -p 5900:5900 \
+  -p 3390:3389 \
+  guitarrapc/jmeter-gui:latest
 ```
 
-docker compose (see sample)
+- Replace `${WORK_DIR}` with your local directory path (e.g., `./scenarios`)
+- Port `5900`: VNC
+- Port `3390`: RDP (mapped from container's 3389)
+
+### Using Docker Compose
+
+See the [samples](./samples) directory for a complete example:
 
 ```shell
 cd samples
 docker compose up
 ```
 
-connect to container via VNC or RDP.
+### Connecting to JMeter GUI
 
-* password: `root`
+**Password**: `root`
 
-**RDP**
+#### RDP (Recommended for Windows)
 
-![image](https://user-images.githubusercontent.com/3856350/91890535-9a083700-ecca-11ea-877f-2a30a2c84d74.png)
+Use Windows Remote Desktop Connection or any RDP client.
 
-> TIPS: if you cannot see password column, just press ENTER key.
+- Host: `localhost:3390`
+- Password: `root`
 
-![image](https://user-images.githubusercontent.com/3856350/91892760-2d8f3700-ecce-11ea-9da4-089b2da50305.png)
+![image](./images/rdp_settings.png)
+
+![image](./images/rdp_login.png)
+
+#### VNC (Recommended for macOS/Linux)
+
+Use macOS Screen Sharing, VNC Viewer, or any VNC client.
+
+- Host: `localhost:5900`
+- Password: `root`
+
+![image](./images/vnc_settings.png)
+
+![image](./images/vnc_login.png)
 
 
-**VNC**
+### Working with JMeter
 
-![image](https://user-images.githubusercontent.com/3856350/91890592-ae4c3400-ecca-11ea-9b25-a9da712a7a93.png)
+JMeter GUI is automatically launched when the container starts:
 
-Jmeter GUI is already launched.
+![image](./images/jmeter_initial.png)
 
-![image](https://user-images.githubusercontent.com/3856350/91890725-e489b380-ecca-11ea-984f-308a23d2144c.png)
+Configure your JMeter test scenarios using the GUI:
 
-Configure JMeter Scenario with GUI inside container.
+![image](./images/jmeter_settings.png)
 
-![image](https://user-images.githubusercontent.com/3856350/91891086-5c57de00-eccb-11ea-824b-04e0c2b90d35.png)
+Save your scenario files (`.jmx`) to the mounted volume (`/root/jmeter` in the container) to access them from your host:
 
-
-Save Scenario's `.jmx` on mounted volume to share Scenario with Host OS, in this example `/root/jmeter`.
-
-![image](https://user-images.githubusercontent.com/3856350/91890909-20bd1400-eccb-11ea-8d18-5846bdd7fe4b.png)
-
+![image](./images/jmeter_save.png)
 
 ## Build
 
-Docker build command:
+To build the Docker image locally:
 
 ```shell
 docker build -t jmeter-gui:5.6.3-ubuntu24.04 -f ./src/ubuntu24.04/Dockerfile .
 ```
 
+Run your locally built image:
+
 ```shell
-docker run -it --rm -v ${PWD}/:/root/mount/ -p 5900:5900 -p 3390:3389 jmeter-gui:5.6.3-ubuntu24.04
+docker run -itd --rm -v ${PWD}/scenarios:/root/jmeter/ -p 5900:5900 -p 3390:3389 jmeter-gui:5.6.3-ubuntu24.04
 ```
+
+## Version Information
+
+- **Base Image**: Ubuntu 24.04
+- **JMeter**: 5.6.3
+- **JMeter Plugins Manager**: 1.10
+
+## License
+
+This project is licensed under MIT License.
