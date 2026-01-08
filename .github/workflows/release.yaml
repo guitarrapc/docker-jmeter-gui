@@ -1,0 +1,68 @@
+name: Docker Push
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+*" # only tag with pattern match
+
+env:
+  CONTAINER_IMAGE: guitarrapc/jmeter-gui
+
+jobs:
+  release:
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./src/ubuntu24.04/Dockerfile
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+      # docker push (auto using buildkit)
+      - name: Login to Docker Hub
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          username: ${{ secrets.SYNCED_DOCKER_USER }}
+          password: ${{ secrets.SYNCED_DOCKER_PASS }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: |
+            ${{ env.CONTAINER_IMAGE }}
+            ghcr.io/${{ env.CONTAINER_IMAGE }}
+
+      - name: Build and push Docker image (latest)
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: false
+          tags: latest
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push Docker image (tag)
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

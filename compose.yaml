@@ -1,0 +1,11 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./src/ubuntu24.04/Dockerfile
+    tty: true
+    volumes:
+      - ./scenarios/:/root/jmeter/
+    ports:
+      - 5900:5900
+      - 3390:3389
