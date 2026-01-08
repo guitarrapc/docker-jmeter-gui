@@ -2,7 +2,8 @@ services:
   web:
     build:
       context: .
-      dockerfile: ./alpine/Dockerfile
+      #dockerfile: ./alpine/Dockerfile
+      dockerfile: ./Dockerfile
     tty: true
     volumes:
       - ./scenario/:/root/jmeter/

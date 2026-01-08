@@ -71,11 +71,10 @@ Docker build command:
 
 ```shell
 docker build -t jmeter-gui:5.6.3-alpine -f ./alpine3.23/Dockerfile .
-docker run -it --rm -v ${PWD}/:/root/mount/ -p 5900:5900 -p 3390:3389 jmeter-gui:5.6.3
+docker build -t jmeter-gui:5.6.3-ubuntu24.04 -f ./Dockerfile .
 ```
 
-docker compose build command:
-
 ```shell
-docker compose build
+docker run -it --rm -v ${PWD}/:/root/mount/ -p 5900:5900 jmeter-gui:5.6.3-alpine
+docker run -it --rm -v ${PWD}/:/root/mount/ -p 5900:5900 -p 3390:3389 jmeter-gui:5.6.3-ubuntu24.04
 ```
