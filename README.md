@@ -48,7 +48,7 @@ docker run -itd --rm \
 
 ### Using Docker Compose
 
-See the [samples](./samples) directory for a complete example:
+See the [samples](./samples) directory for a complete example.
 
 ```shell
 cd samples
@@ -84,27 +84,27 @@ Use macOS Screen Sharing, VNC Viewer, or any VNC client.
 
 ### Working with JMeter
 
-JMeter GUI is automatically launched when the container starts:
+JMeter GUI is automatically launched when the container starts.
 
 ![image](./images/jmeter_initial.png)
 
-Configure your JMeter test scenarios using the GUI:
+Configure your JMeter test scenarios using the GUI.
 
 ![image](./images/jmeter_settings.png)
 
-Save your scenario files (`.jmx`) to the mounted volume (`/root/jmeter` in the container) to access them from your host:
+Save your scenario files (`.jmx`) to the mounted volume (`/root/jmeter` in the container) to access them from your host.
 
 ![image](./images/jmeter_save.png)
 
 ## Build
 
-To build the Docker image locally:
+To build the Docker image locally.
 
 ```shell
 docker build -t jmeter-gui:5.6.3-ubuntu24.04 -f ./src/ubuntu24.04/Dockerfile .
 ```
 
-Run your locally built image:
+Run your locally built image.
 
 ```shell
 docker run -itd --rm -v ${PWD}/scenarios:/root/jmeter/ -p 5900:5900 -p 3390:3389 jmeter-gui:5.6.3-ubuntu24.04
