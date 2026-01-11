@@ -13,11 +13,11 @@ RUN apk add --no-cache curl \
 FROM alpine:3.23
 
 LABEL version="5.6.3"
-LABEL description="An Alpine based docker image contains Apache JMeter GUI to configure scenario. Enable connect container with browser via noVNC."
+LABEL description="An Alpine based docker image contains Apache JMeter GUI to configure scenario. Enable connect container with browser."
 LABEL maintainer="3856350+guitarrapc@users.noreply.github.com"
 
-ENV NOVNC_VERSION="1.5.0"
-ENV WEBSOCKIFY_VERSION="0.12.0"
+ENV NOVNC_VERSION="1.6.0"
+ENV WEBSOCKIFY_VERSION="0.13.0"
 ENV JMETER_VERSION="5.6.3"
 ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_BIN=${JMETER_HOME}/bin
@@ -35,14 +35,14 @@ RUN mkdir -p /opt/noVNC/utils/websockify \
     && wget -qO- https://github.com/novnc/websockify/archive/v${WEBSOCKIFY_VERSION}.tar.gz | tar xz --strip 1 -C /opt/noVNC/utils/websockify \
     && ln -s /opt/noVNC/vnc.html /opt/noVNC/index.html
 
+COPY --from=builder /opt/apache-jmeter-${JMETER_VERSION} /opt/apache-jmeter-${JMETER_VERSION}
+
 # Configure VNC
 RUN mkdir -p /root/.vnc \
     && echo '#!/bin/sh' > /root/.vnc/xstartup \
     && echo 'fluxbox &' >> /root/.vnc/xstartup \
     && echo 'jmeter -Jjmeter.laf=CrossPlatform' >> /root/.vnc/xstartup \
     && chmod +x /root/.vnc/xstartup
-
-COPY --from=builder /opt/apache-jmeter-${JMETER_VERSION} /opt/apache-jmeter-${JMETER_VERSION}
 
 # Configure supervisord
 RUN mkdir -p /var/log/supervisor

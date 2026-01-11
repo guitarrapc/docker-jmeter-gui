@@ -39,7 +39,6 @@ RUN wget https://github.com/kasmtech/KasmVNC/releases/download/v${KASMVNC_VERSIO
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy JMeter from builder
 COPY --from=builder /opt/apache-jmeter-${JMETER_VERSION} /opt/apache-jmeter-${JMETER_VERSION}
 
 # Configure KasmVNC
