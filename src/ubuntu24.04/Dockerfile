@@ -1,10 +1,11 @@
 FROM ubuntu:24.04
 
 LABEL version="5.6.3"
-LABEL description="An Ubuntu based docker image contains Apache JMeter GUI to configure scenario. Enable connect container with VNC and RDP."
+LABEL description="An Ubuntu based docker image contains Apache JMeter GUI to configure scenario. Enable connect container with browser."
 LABEL maintainer="3856350+guitarrapc@users.noreply.github.com"
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV KASMVNC_VERSION="1.4.0"
 ENV JMETER_VERSION="5.6.3"
 ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_BIN=${JMETER_HOME}/bin
@@ -12,16 +13,24 @@ ENV JMETER_PLUGINS_MANAGER_VERSION="1.10"
 ENV PATH=${JMETER_BIN}:$PATH
 ENV DISPLAY=":99" \
     RESOLUTION="1366x768x24" \
-    PASS="root"
+    PASS="root" \
+    VNC_PW="root"
 
 # Install minimal packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     wget ca-certificates \
-    xvfb x11vnc \
-    xrdp xorgxrdp \
     fluxbox xterm \
     openjdk-11-jre \
+    libdatetime-perl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install KasmVNC
+RUN wget https://github.com/kasmtech/KasmVNC/releases/download/v${KASMVNC_VERSION}/kasmvncserver_jammy_${KASMVNC_VERSION}_amd64.deb -O /tmp/kasmvnc.deb \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends /tmp/kasmvnc.deb \
+    && rm /tmp/kasmvnc.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -32,28 +41,15 @@ RUN wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_
     && rm -rf ${JMETER_HOME}/docs ${JMETER_HOME}/printable_docs
 RUN wget https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager/${JMETER_PLUGINS_MANAGER_VERSION}/jmeter-plugins-manager-${JMETER_PLUGINS_MANAGER_VERSION}.jar -O ${JMETER_HOME}/lib/ext/jmeter-plugins-manager.jar
 
-# Configure VNC
-RUN x11vnc -storepasswd ${PASS} /etc/x11vnc.pass
+# Configure KasmVNC
+RUN mkdir -p /root/.vnc \
+    && echo '#!/bin/sh' > /root/.vnc/xstartup \
+    && echo 'fluxbox &' >> /root/.vnc/xstartup \
+    && echo 'jmeter -Jjmeter.laf=CrossPlatform' >> /root/.vnc/xstartup \
+    && chmod +x /root/.vnc/xstartup
 
-# Set root password for RDP login
-RUN echo "root:${PASS}" | chpasswd
-
-# Configure RDP
-COPY xrdp.ini /etc/xrdp/xrdp.ini
-
-EXPOSE 5900 3389
+EXPOSE 8080
 
 WORKDIR /root
 
-CMD ["bash", "-c", "rm -f /tmp/.X99-lock /var/run/xrdp.pid /var/run/xrdp-sesman.pid \
-    && /usr/bin/Xvfb ${DISPLAY} -screen 0 ${RESOLUTION} -ac +extension GLX +render -noreset & \
-    sleep 3 \
-    && fluxbox & \
-    sleep 2 \
-    && jmeter -Jjmeter.laf=CrossPlatform & \
-    sleep 3 \
-    && x11vnc -xkb -noxrecord -noxfixes -noxdamage -display ${DISPLAY} -forever -rfbport 5900 -rfbauth /etc/x11vnc.pass -shared & \
-    sleep 2 \
-    && xrdp-sesman & \
-    sleep 1 \
-    && xrdp --nodaemon"]
+CMD ["bash", "-c", "echo '2' | vncserver ${DISPLAY} -depth 24 -geometry 1366x768 -websocketPort 8080 -sslOnly 0 -DisableBasicAuth -FrameRate=30 -select-de manual -interface 0.0.0.0 -fg"]

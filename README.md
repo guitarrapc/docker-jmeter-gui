@@ -4,7 +4,7 @@
 
 # docker-jmeter-gui
 
-Run [Apache JMeter](http://jmeter.apache.org) GUI in a Docker container and connect via RDP or VNC.
+Run [Apache JMeter](http://jmeter.apache.org) GUI in a Docker container and connect via browser using KasmVNC.
 
 Find Images on [Docker Hub](https://hub.docker.com/r/guitarrapc/jmeter-gui).
 
@@ -25,7 +25,7 @@ Apache JMeter is a GUI-based performance testing tool, but setting up the runtim
 
 This Docker image solves these problems by running JMeter GUI inside a container.
 
-- Access JMeter GUI via **RDP** (default on Windows) or **VNC** (default on macOS/Linux)
+- Access JMeter GUI via **browser** using KasmVNC - no additional software needed
 - Mount host directories to create and save `.jmx` scenario files
 - Keep your host environment clean without installing Java or JMeter
 - Ensure consistent behavior across different platforms
@@ -37,14 +37,12 @@ This Docker image solves these problems by running JMeter GUI inside a container
 ```shell
 docker run -itd --rm \
   -v ${WORK_DIR}/:/root/jmeter/ \
-  -p 5900:5900 \
-  -p 3390:3389 \
+  -p 8080:8080 \
   guitarrapc/jmeter-gui:latest
 ```
 
 - Replace `${WORK_DIR}` with your local directory path (e.g., `./scenarios`)
-- Port `5900`: VNC
-- Port `3390`: RDP (mapped from container's 3389)
+- Port `8080`: KasmVNC (Browser access)
 
 ### Using Docker Compose
 
@@ -57,25 +55,12 @@ docker compose up
 
 ### Connecting to JMeter GUI
 
-**Password**: `root`
+**KasmVNC** provides browser-based access with no additional software required.
 
-#### RDP (Recommended for Windows)
+1. Open your web browser
+2. Navigate to: `http://localhost:8080`
 
-Use Windows Remote Desktop Connection or any RDP client.
-
-- Host: `localhost:3390`
-- Password: `root`
-
-![image](./images/rdp_settings.png)
-
-![image](./images/rdp_login.png)
-
-#### VNC (Recommended for macOS/Linux)
-
-Use macOS Screen Sharing, VNC Viewer, or any VNC client.
-
-- Host: `localhost:5900`
-- Password: `root`
+That's it! Access JMeter GUI from any platform without installing VNC or RDP clients.
 
 ![image](./images/vnc_settings.png)
 
@@ -107,7 +92,7 @@ docker build -t jmeter-gui:5.6.3-ubuntu24.04 -f ./src/ubuntu24.04/Dockerfile .
 Run your locally built image.
 
 ```shell
-docker run -itd --rm -v ${PWD}/scenarios:/root/jmeter/ -p 5900:5900 -p 3390:3389 jmeter-gui:5.6.3-ubuntu24.04
+docker run -it --rm -v ${PWD}/scenarios:/root/jmeter/ -p 8080:8080 jmeter-gui:5.6.3-ubuntu24.04
 ```
 
 ## Version Information
