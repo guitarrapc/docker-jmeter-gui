@@ -23,10 +23,6 @@ RUN apk add --no-cache \
     xvfb \
     openjdk11-jre \
     supervisor \
-    python3 \
-    py3-numpy \
-    dbus \
-    dbus-x11 \
     ttf-dejavu \
     && rm -rf /var/cache/apk/*
 
