@@ -1,12 +1,13 @@
-FROM alpine:3.23 as builder
+FROM alpine:3.23 AS builder
 
 ENV JMETER_VERSION="5.6.3"
 ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
+ENV JMETER_PLUGINS_MANAGER_VERSION="1.10"
 
 RUN apk add --no-cache curl \
     && curl -L https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz > /tmp/jmeter.tgz \
     && tar -xvf /tmp/jmeter.tgz -C /opt \
-    && curl -L https://jmeter-plugins.org/get/ > ${JMETER_HOME}/lib/ext/jmeter-plugins-manager.jar \
+    && curl -L https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager/${JMETER_PLUGINS_MANAGER_VERSION}/jmeter-plugins-manager-${JMETER_PLUGINS_MANAGER_VERSION}.jar -o ${JMETER_HOME}/lib/ext/jmeter-plugins-manager.jar \
     && rm -rf ${JMETER_HOME}/docs ${JMETER_HOME}/printable_docs
 
 FROM alpine:3.23
@@ -15,24 +16,23 @@ LABEL version="5.6.3"
 LABEL description="An Alpine based docker image contains Apache JMeter GUI to configure scenario. Enable connect container with browser via noVNC."
 LABEL maintainer="3856350+guitarrapc@users.noreply.github.com"
 
+ENV NOVNC_VERSION="1.5.0"
+ENV WEBSOCKIFY_VERSION="0.12.0"
 ENV JMETER_VERSION="5.6.3"
 ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_BIN=${JMETER_HOME}/bin
-ENV JMETER_PLUGINS_MANAGER_VERSION="1.10"
 ENV PATH=${JMETER_BIN}:$PATH
 ENV DISPLAY=":99"
-ENV NOVNC_VERSION="1.5.0"
 
 # Install minimal packages
 RUN apk add --no-cache \
-    wget ca-certificates openjdk11-jre \
-    fluxbox xterm x11vnc xvfb ttf-dejavu supervisor \
+    ca-certificates bash fluxbox xterm x11vnc xvfb ttf-dejavu supervisor openjdk11-jre wget \
     && rm -rf /var/cache/apk/*
 
 # Install noVNC
 RUN mkdir -p /opt/noVNC/utils/websockify \
     && wget -qO- https://github.com/novnc/noVNC/archive/v${NOVNC_VERSION}.tar.gz | tar xz --strip 1 -C /opt/noVNC \
-    && wget -qO- https://github.com/novnc/websockify/archive/v0.12.0.tar.gz | tar xz --strip 1 -C /opt/noVNC/utils/websockify \
+    && wget -qO- https://github.com/novnc/websockify/archive/v${WEBSOCKIFY_VERSION}.tar.gz | tar xz --strip 1 -C /opt/noVNC/utils/websockify \
     && ln -s /opt/noVNC/vnc.html /opt/noVNC/index.html
 
 # Configure VNC
