@@ -22,20 +22,12 @@ RUN apk add --no-cache \
     x11vnc \
     xvfb \
     openjdk11-jre \
-    perl-datetime \
     supervisor \
-    git \
     python3 \
     py3-numpy \
-    ttf-dejavu \
-    fontconfig \
     dbus \
     dbus-x11 \
-    mesa-gl \
-    mesa-dri-gallium \
-    libxrender \
-    libxtst \
-    libxi \
+    ttf-dejavu \
     && rm -rf /var/cache/apk/*
 
 # Install noVNC
