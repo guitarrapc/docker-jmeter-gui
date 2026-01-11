@@ -11,18 +11,12 @@ ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_BIN=${JMETER_HOME}/bin
 ENV JMETER_PLUGINS_MANAGER_VERSION="1.10"
 ENV PATH=${JMETER_BIN}:$PATH
-ENV DISPLAY=":99" \
-    RESOLUTION="1366x768x24" \
-    PASS="root" \
-    VNC_PW="root"
+ENV DISPLAY=":99"
 
 # Install minimal packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    wget ca-certificates \
-    fluxbox xterm \
-    openjdk-11-jre \
-    libdatetime-perl \
+    wget ca-certificates fluxbox xterm openjdk-11-jre libdatetime-perl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
