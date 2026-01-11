@@ -48,8 +48,10 @@ RUN mkdir -p /root/.vnc \
     && echo 'jmeter -Jjmeter.laf=CrossPlatform' >> /root/.vnc/xstartup \
     && chmod +x /root/.vnc/xstartup
 
+COPY kasmvnc.yaml /root/.vnc/kasmvnc.yaml
+
 EXPOSE 8080
 
 WORKDIR /root
 
-CMD ["bash", "-c", "echo '2' | vncserver ${DISPLAY} -depth 24 -geometry 1366x768 -websocketPort 8080 -sslOnly 0 -DisableBasicAuth -FrameRate=30 -select-de manual -interface 0.0.0.0 -fg"]
+CMD ["bash", "-c", "echo '2' | vncserver ${DISPLAY} -DisableBasicAuth -select-de manual -fg"]
