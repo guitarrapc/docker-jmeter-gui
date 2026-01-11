@@ -15,8 +15,7 @@ ENV DISPLAY=":99"
 
 # Install minimal packages
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    wget ca-certificates fluxbox xterm openjdk-11-jre libdatetime-perl \
+    && apt-get install -y --no-install-recommends wget ca-certificates fluxbox xterm openjdk-11-jre \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
