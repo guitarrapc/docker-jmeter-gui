@@ -4,15 +4,17 @@
 
 # docker-jmeter-gui
 
-Run [Apache JMeter](http://jmeter.apache.org) GUI in a Docker container and connect via browser using KasmVNC.
+Run [Apache JMeter](http://jmeter.apache.org) GUI in a Docker container and connect via browser.
 
 Find Images on [Docker Hub](https://hub.docker.com/r/guitarrapc/jmeter-gui).
 
 ## Featured Tags
 
-- [latest](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/ubuntu24.04/Dockerfile), [5.6.3](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/ubuntu24.04/Dockerfile) (Ubuntu 24.04)
+- [latest](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/ubuntu24.04/Dockerfile), [5](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/ubuntu24.04/Dockerfile), [5.6](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/ubuntu24.04/Dockerfile), [5.6.3](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/ubuntu24.04/Dockerfile) (Ubuntu 24.04 based)
   - `docker pull guitarrapc/jmeter-gui:5.6.3`
-- [5.3](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.3/Dockerfile) (Alpine)
+- [5-alpine3.23](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/alpine3.23/Dockerfile), [5.6-alpine3.23](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/alpine3.23/Dockerfile), [5.6.3-alpine3.23](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.6.3/src/alpine3.23/Dockerfile) (Alpine 3.23 based)
+  - `docker pull guitarrapc/jmeter-gui:5.6.3-alpine3.23`
+- [5.3](https://github.com/guitarrapc/docker-jmeter-gui/blob/5.3/Dockerfile) (Alpine based - legacy, require VNC or RDP client)
   - `docker pull guitarrapc/jmeter-gui:5.3`
 
 ## Motivation
@@ -23,26 +25,29 @@ Apache JMeter is a GUI-based performance testing tool, but setting up the runtim
 - **Platform differences**: Behavior may vary across operating systems
 - **Installation overhead**: You may not want to install JMeter directly on your host machine
 
-This Docker image solves these problems by running JMeter GUI inside a container.
+This Docker image solves these problems by providing JMeter GUI in a containerized environment with browser-based access.
 
-- Access JMeter GUI via **browser** using KasmVNC - no additional software needed
-- Mount host directories to create and save `.jmx` scenario files
-- Keep your host environment clean without installing Java or JMeter
-- Ensure consistent behavior across different platforms
+- **Browser-based operation**: Access JMeter GUI directly from your web browser using KasmVNC - no VNC/RDP client installation required
+- **Zero client setup**: Operate JMeter GUI from any OS with just a web browser
+- **Cross-platform support**: Available on both Ubuntu 24.04 and Alpine 3.23 base images
+- **Easy file sharing**: Mount host directories to create and save `.jmx` scenario files
+- **Clean environment**: Keep your host system clean without installing Java or JMeter
+- **Consistent behavior**: Ensure identical operation across different platforms
 
 ## Usage
 
 ### Using Docker Run
 
+Run the container with your scenario directory mounted:
+
 ```shell
-docker run -itd --rm \
-  -v ${WORK_DIR}/:/root/jmeter/ \
-  -p 8080:8080 \
-  guitarrapc/jmeter-gui:latest
+docker run -itd --rm -v ${WORK_DIR}/:/root/jmeter/ -p 8080:8080 guitarrapc/jmeter-gui:latest
 ```
 
-- Replace `${WORK_DIR}` with your local directory path (e.g., `./scenarios`)
-- Port `8080`: KasmVNC (Browser access)
+- Port `8080`: Browser-based access
+- Available variants:
+  - `guitarrapc/jmeter-gui:5.6` (Ubuntu 24.04 based)
+  - `guitarrapc/jmeter-gui:5.6.3-alpine3.23` (Alpine 3.23 based)
 
 ### Using Docker Compose
 
@@ -55,17 +60,18 @@ docker compose up
 
 ### Connecting to JMeter GUI
 
-**KasmVNC** provides browser-based access with no additional software required.
+This image uses **KasmVNC**(Ubuntu) or **noVNC** (Alpine) for browser-based access.
 
-1. Open your web browser
-2. Navigate to: `http://localhost:8080`
+1. Start the container using Docker run or Docker Compose
+2. Open your web browser
+3. Navigate to: `http://localhost:8080`
+4. JMeter GUI will be accessible directly in your browser
 
-That's it! Access JMeter GUI from any platform without installing VNC or RDP clients.
+This approach works on any operating system (Windows, macOS, Linux) without additional software.
 
-![image](./images/vnc_settings.png)
-
-![image](./images/vnc_login.png)
-
+| Ubuntu 24.04 Variant | Alpine 3.23 Variant |
+| --- | --- |
+| ![Ubuntu Browser look](./images/ubuntu_login.png) | ![Alpine Browser look](./images/alpine_login.png)
 
 ### Working with JMeter
 
@@ -99,7 +105,7 @@ docker run -it --rm -v ${PWD}/scenarios:/root/jmeter/ -p 8080:8080 jmeter-gui:5.
 
 ## Version Information
 
-- **Base Image**: Ubuntu 24.04
+- **Base Image**: Ubuntu 24.04, Alpine 3.23
 - **JMeter**: 5.6.3
 - **JMeter Plugins Manager**: 1.10
 
