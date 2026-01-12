@@ -1,5 +1,7 @@
 FROM ubuntu:24.04 AS builder
 
+ARG TARGETARCH
+
 ENV JMETER_VERSION="5.6.3"
 ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_PLUGINS_MANAGER_VERSION="1.10"
@@ -22,6 +24,8 @@ RUN apt-get update \
 
 FROM ubuntu:24.04
 
+ARG TARGETARCH
+
 LABEL version="5.6.3"
 LABEL description="An Ubuntu based docker image contains Apache JMeter GUI to configure scenario. Enable connect container with browser."
 LABEL maintainer="3856350+guitarrapc@users.noreply.github.com"
@@ -41,7 +45,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Install KasmVNC
-RUN wget https://github.com/kasmtech/KasmVNC/releases/download/v${KASMVNC_VERSION}/kasmvncserver_jammy_${KASMVNC_VERSION}_amd64.deb -O /tmp/kasmvnc.deb \
+RUN wget https://github.com/kasmtech/KasmVNC/releases/download/v${KASMVNC_VERSION}/kasmvncserver_jammy_${KASMVNC_VERSION}_${TARGETARCH}.deb -O /tmp/kasmvnc.deb \
     && apt-get update \
     && apt-get install -y --no-install-recommends /tmp/kasmvnc.deb \
     && rm /tmp/kasmvnc.deb \
