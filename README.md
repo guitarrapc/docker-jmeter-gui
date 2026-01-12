@@ -92,8 +92,8 @@ Save your scenario files (`.jmx`) to the mounted volume (`/root/jmeter` in the c
 To build the Docker image locally.
 
 ```shell
-docker build -t jmeter-gui:5.6.3-ubuntu24.04 -f ./src/ubuntu24.04/Dockerfile src/ubuntu24.04/
-docker build -t jmeter-gui:5.6.3-alpine3.23 -f ./src/alpine3.23/Dockerfile src/alpine3.23/
+docker buildx build --platform linux/amd64,linux/arm64 -t jmeter-gui:5.6.3-ubuntu24.04 -f ./src/ubuntu24.04/Dockerfile src/ubuntu24.04/
+docker buildx build --platform linux/amd64,linux/arm64 -t jmeter-gui:5.6.3-alpine3.23 -f ./src/alpine3.23/Dockerfile src/alpine3.23/
 ```
 
 Run your locally built image.

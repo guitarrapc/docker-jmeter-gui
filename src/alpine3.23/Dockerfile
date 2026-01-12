@@ -1,5 +1,7 @@
 FROM alpine:3.23 AS builder
 
+ARG TARGETARCH
+
 ENV JMETER_VERSION="5.6.3"
 ENV JMETER_HOME=/opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_PLUGINS_MANAGER_VERSION="1.10"
@@ -20,6 +22,8 @@ RUN apk add --no-cache curl \
     && rm -rf ${JMETER_HOME}/docs ${JMETER_HOME}/printable_docs /tmp/jmeter.tgz
 
 FROM alpine:3.23
+
+ARG TARGETARCH
 
 LABEL version="5.6.3"
 LABEL description="An Alpine based docker image contains Apache JMeter GUI to configure scenario. Enable connect container with browser."
