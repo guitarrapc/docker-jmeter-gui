@@ -93,7 +93,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  build:
+  build-complete:
     permissions:
       contents: read
     needs: [build-ubuntu, build-alpine]
